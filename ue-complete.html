@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Unstable Engineer</title>
+    <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    #gameContainer canvas {
+      display: block;
+    }
+
+    div#logo {
+      width: 180px;
+      height: 180px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -120px;
+      margin-left: -90px;
+      background-image: url("sharedfiles/WigDevLogo.png");
+      background-repeat: no-repeat;
+    }
+
+    div#progressBar {
+      width: 180px;
+      height: 20px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -90px;
+      margin-top: 80px;
+      background-color: #ffffff;
+    }
+    
+    div#emptyBar {
+      display: block;
+      width: 178px;
+      height: 18px;
+      position: absolute;
+      right: 1px;
+      top: 1px;
+      background-color: #000000;
+    }
+
+    div#fullBar {
+      display: block;
+      width: 0%;
+      height: 18px;
+      position: absolute;
+      top: 1px;
+      background-color: #ffffff;
+    }
+  </style>
+    <script src="sharedfiles/UnityLoader.js"></script>
+    <script>
+      function UnityProgress(unityInstance, progress) {
+        if (!unityInstance.Module)
+          return;
+        if (!unityInstance.logo) {
+          unityInstance.logo = document.createElement("div");
+          unityInstance.logo.id = "logo";
+          unityInstance.container.appendChild(unityInstance.logo);
+          
+          unityInstance.progressBar = document.createElement("div");
+          unityInstance.progressBar.id = "progressBar";
+          unityInstance.progressBar.emptyBar = document.createElement("div");
+          unityInstance.progressBar.emptyBar.id = "emptyBar";
+          unityInstance.progressBar.appendChild(unityInstance.progressBar.emptyBar);
+          unityInstance.progressBar.fullBar = document.createElement("div");
+          unityInstance.progressBar.fullBar.id = "fullBar";
+          unityInstance.progressBar.appendChild(unityInstance.progressBar.fullBar);
+          unityInstance.container.appendChild(unityInstance.progressBar);
+        }
+        unityInstance.progressBar.fullBar.style.width = (100 * progress) + "%";
+        if (progress == "complete") {
+          unityInstance.logo.style.display = "none";
+          unityInstance.progressBar.style.display = "none";
+        }
+      }
+      var gameInstance = UnityLoader.instantiate("gameContainer", "ue-complete/Build/WebGL.json", {
+      	onProgress: UnityProgress,
+        Module: { onRuntimeInitialized: function() { UnityProgress(gameInstance, "complete"); } }
+      });
+    </script>
+  </head>
+  <body>
+    <div id="gameContainer" style="width: 100%; height: 100%; position: fixed; bottom: 0"></div>
+  </body>
+</html>
